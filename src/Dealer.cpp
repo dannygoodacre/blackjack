@@ -1,6 +1,6 @@
 #include "Header.h"
 
-Dealer::Dealer()
+Dealer::Dealer(int startingWallet) : Player(startingWallet)
 {
 	this->top = 0;
 	Card deck[52];
@@ -41,9 +41,33 @@ void Dealer::shuffleShoe()
 	std::shuffle(std::begin(this->shoe), std::end(this->shoe), std::default_random_engine(seed));
 }
 
+int Dealer::takeBet(Player& player)
+{
+	int bet;
+	bool valid = false;
+	while (!valid)
+	{
+		std::cout << "Bet (" + std::to_string(player.getWallet()) + "): ";
+		std::cin >> bet;
+		std::cout << "\n";
+		if (bet > player.getWallet())
+		{
+			std::cout << "Insufficient funds. Please enter a lower amount.";
+		}
+		else
+		{
+			player.addToWallet(-bet);
+			valid = true;
+		}
+	}
+
+	return bet;
+}
+
 bool Dealer::playRound(Player& player, Dealer& dealer)
 {
-	// deals first two cards each
+	int bet = dealer.takeBet(player);
+
 	player.hit(dealer.deal());
 	dealer.hit(dealer.deal());
 	player.hit(dealer.deal());
@@ -72,6 +96,7 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 		std::cout << " (Blackjack)\n\n";
 
 		std::cout << "You have blackjack! You win.";
+		player.addToWallet(2.5 * bet);
 	}
 	else if (Hand::isBlackjack(dealer.getHand()) && Hand::isBlackjack(player.getHand()))
 	{
@@ -84,10 +109,12 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 		std::cout << " (Blackjack)\n\n";
 
 		std::cout << "You both have blackjack! Push.";
+		player.addToWallet(bet);
 	}
 	else
 	{
 		char choice;
+		int round = 1;
 		bool again = true;
 
 		while (again)
@@ -103,7 +130,8 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			std::cout << "What would you like to do?\n";
 			std::cout << "H - Hit\n";
 			std::cout << "S - Stand\n";
-			std::cout << "D - Double down\n\n";
+			std::cout << ((round == 1) ? "D - Double down\n\n" : "");
+			round++;
 
 			std::cout << "choice: ";
 			std::cin >> choice;
@@ -127,6 +155,7 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 
 			case 'D': // double down
 				player.hit(dealer.deal());
+				player.addToWallet(-bet);
 
 				std::cout << "\nDoubling down...\n\nYour hand: ";
 				player.getHand().show();
@@ -177,6 +206,7 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			if (dealer.getHand().getScore() > 21)
 			{
 				std::cout << "Dealer busts! You win!";
+				player.addToWallet(2 * bet);
 			}
 			else if (dealer.getHand().getScore() > player.getHand().getScore())
 			{
@@ -185,28 +215,41 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			else if (dealer.getHand().getScore() < player.getHand().getScore())
 			{
 				std::cout << "You win!";
+				player.addToWallet(2 * bet);
+
 			}
 			else
 			{
 				std::cout << "Push!";
+				player.addToWallet(bet);
 			}
 		}
 	}
 
-	char choice;
-	std::cout << "\n\nWould you like to play again? (Y/N): ";
-	std::cin >> choice;
-
-	switch (toupper(choice))
+	if (player.getWallet() <= 0)
 	{
-	case 'Y':
-		player.resetHand();
-		dealer.resetHand();
-		return true;
-	case 'N':
-		return false;
-	default:
-		std::cout << "Invalid choice, exiting";
+		std::cout << "\n\nYour wallet is empty, goodbye!";
 		return false;
 	}
+	else
+	{
+		char choice;
+		std::cout << "\n\nWould you like to play again? (Y/N): ";
+		std::cin >> choice;
+
+		switch (toupper(choice))
+		{
+		case 'Y':
+			player.resetHand();
+			dealer.resetHand();
+			return true;
+		case 'N':
+			return false;
+		default:
+			std::cout << "Invalid choice, exiting";
+			return false;
+		}
+	}
+
+
 }

@@ -2,8 +2,8 @@
 
 int main()
 {
-	Player player;
-	Dealer dealer;
+	Player player(100);
+	Dealer dealer(0);
 
 	bool again = true;
 	while (again)

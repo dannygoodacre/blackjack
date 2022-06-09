@@ -41,7 +41,6 @@ public:
 	void show();
 	void reset();
 	Card getCard(int n);
-	int getNumberOfCards();
 
 private:
 	std::array<Card, 14> cards;
@@ -54,20 +53,25 @@ private:
 class Player
 {
 public:
+	Player(int startingWallet);
 	void hit(Card card);
 	Hand getHand();
 	void resetHand();
+	int getWallet();
+	void addToWallet(int val);
 
 private:
 	Hand hand;
+	int wallet;
 };
 
 
 class Dealer: public Player
 {
 public:
-	Dealer();
+	Dealer(int startingWallet);
 	static bool playRound(Player& player, Dealer& dealer);
+	static int takeBet(Player& player);
 
 private:
 	Card shoe[416];

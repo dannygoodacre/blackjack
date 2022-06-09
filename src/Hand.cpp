@@ -66,8 +66,3 @@ Card Hand::getCard(int n)
 {
 	return this->cards.at(n);
 }
-
-int Hand::getNumberOfCards()
-{
-	return this->numberOfCards;
-}
