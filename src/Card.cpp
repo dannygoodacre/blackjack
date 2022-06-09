@@ -1,11 +1,13 @@
 #include "Header.h"
 
-const std::string Card::RANKS[13] = { "A","2","3","4","5","6","7","8","9","10","J","Q","K" };
+const std::string Card::RANKS[13]
+	= { "A","2","3","4","5","6","7","8","9","10","J","Q","K" };
 const char Card::SUITS[4] = { 'h','d','c','s' };
 
 bool Card::isNumber(const std::string& s)
 {
-	return !s.empty() && find_if(s.begin(), s.end(), [](unsigned char c) { return !isdigit(c); }) == s.end();
+	return !s.empty() && find_if(s.begin(), s.end(),
+		[](unsigned char c) { return !isdigit(c); }) == s.end();
 }
 
 int Card::scoreOf(Card card)

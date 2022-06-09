@@ -5,9 +5,19 @@ Player::Player(int startingWallet)
 	this->wallet = startingWallet;
 }
 
+void Player::resetHand()
+{
+	this->hand.reset();
+}
+
 void Player::hit(Card card)
 {
 	this->hand.addCard(card);
+}
+
+void Player::addToWallet(int val)
+{
+	this->wallet += val;
 }
 
 Hand Player::getHand()
@@ -15,17 +25,7 @@ Hand Player::getHand()
 	return this->hand;
 }
 
-void Player::resetHand()
-{
-	this->hand.reset();
-}
-
 int Player::getWallet()
 {
 	return this->wallet;
-}
-
-void Player::addToWallet(int val)
-{
-	this->wallet += val;
 }

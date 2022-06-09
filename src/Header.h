@@ -32,14 +32,14 @@ private:
 class Hand
 {
 public:
-	static bool isBlackjack(Hand hand);
-
 	Hand();
-	void addCard(Card card);
-	int getScore();
-	bool isBust();
-	void show();
 	void reset();
+	void addCard(Card card);
+	bool isBlackjack();
+	bool isBust();
+	int getScore();
+	void showScore();
+	void show();
 	Card getCard(int n);
 
 private:
@@ -54,11 +54,11 @@ class Player
 {
 public:
 	Player(int startingWallet);
-	void hit(Card card);
-	Hand getHand();
 	void resetHand();
-	int getWallet();
+	void hit(Card card);
 	void addToWallet(int val);
+	Hand getHand();
+	int getWallet();
 
 private:
 	Hand hand;
@@ -70,8 +70,8 @@ class Dealer: public Player
 {
 public:
 	Dealer(int startingWallet);
+	static int getBet(Player& player);
 	static bool playRound(Player& player, Dealer& dealer);
-	static int takeBet(Player& player);
 
 private:
 	Card shoe[416];

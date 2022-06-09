@@ -5,6 +5,8 @@ int main()
 	Player player(100);
 	Dealer dealer(0);
 
+	std::cout << "Remember: when the fun stops, stop.\n\n";
+
 	bool again = true;
 	while (again)
 	{
@@ -13,3 +15,5 @@ int main()
 
 	std::cout << "\nGoodbye!\n";
 }
+
+// TODO: Prevent doubling down with insufficient funds

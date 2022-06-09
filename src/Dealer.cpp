@@ -28,7 +28,6 @@ Dealer::Dealer(int startingWallet) : Player(startingWallet)
 	this->shuffleShoe();
 }
 
-// take top card from shoe
 Card Dealer::deal()
 {
 	this->top++;
@@ -37,11 +36,13 @@ Card Dealer::deal()
 
 void Dealer::shuffleShoe()
 {
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::shuffle(std::begin(this->shoe), std::end(this->shoe), std::default_random_engine(seed));
+	unsigned seed
+	= std::chrono::system_clock::now().time_since_epoch().count();
+	std::shuffle(std::begin(this->shoe),
+		std::end(this->shoe), std::default_random_engine(seed));
 }
 
-int Dealer::takeBet(Player& player)
+int Dealer::getBet(Player& player)
 {
 	int bet;
 	bool valid = false;
@@ -56,67 +57,60 @@ int Dealer::takeBet(Player& player)
 		}
 		else
 		{
-			player.addToWallet(-bet);
 			valid = true;
 		}
 	}
 
+	player.addToWallet(-bet);
 	return bet;
 }
 
 bool Dealer::playRound(Player& player, Dealer& dealer)
 {
-	int bet = dealer.takeBet(player);
+	int bet = dealer.getBet(player);
 
 	player.hit(dealer.deal());
 	dealer.hit(dealer.deal());
 	player.hit(dealer.deal());
 	dealer.hit(dealer.deal());
 
-	if (Hand::isBlackjack(dealer.getHand()) && !Hand::isBlackjack(player.getHand()))
+if (dealer.getHand().isBlackjack() || player.getHand().isBlackjack())
 	{
+		// someone has blackjack
 		std::cout << "Dealer's cards: ";
 		dealer.getHand().show();
-		std::cout << " (Blackjack)\n\n";
+		dealer.getHand().showScore();
 
 		std::cout << "Your cards: ";
 		player.getHand().show();
-		std::cout << " (" + std::to_string(player.getHand().getScore()) + ")\n\n";
+		player.getHand().showScore();
 
-		std::cout << "Dealer has blackjack! You lose.";
-	}
-	else if (!Hand::isBlackjack(dealer.getHand()) && Hand::isBlackjack(player.getHand()))
-	{
-		std::cout << "Dealer's cards: ";
-		dealer.getHand().show();
-		std::cout << " (" + std::to_string(dealer.getHand().getScore()) + ")\n\n";
-
-		std::cout << "Your cards: ";
-		player.getHand().show();
-		std::cout << " (Blackjack)\n\n";
-
-		std::cout << "You have blackjack! You win.";
-		player.addToWallet(2.5 * bet);
-	}
-	else if (Hand::isBlackjack(dealer.getHand()) && Hand::isBlackjack(player.getHand()))
-	{
-		std::cout << "Dealer's cards: ";
-		dealer.getHand().show();
-		std::cout << " (Blackjack)\n\n";
-
-		std::cout << "Your cards: ";
-		player.getHand().show();
-		std::cout << " (Blackjack)\n\n";
-
-		std::cout << "You both have blackjack! Push.";
-		player.addToWallet(bet);
+		if (dealer.getHand().isBlackjack()
+		&& !player.getHand().isBlackjack())
+		{
+			std::cout << "Dealer has blackjack! You lose.";
+		}
+		else if (!dealer.getHand().isBlackjack()
+		&& player.getHand().isBlackjack())
+		{
+			std::cout << "You have blackjack! You win.";
+			player.addToWallet(2.5 * bet);
+		}
+		else if (dealer.getHand().isBlackjack()
+		&& player.getHand().isBlackjack())
+		{
+			std::cout << "You both have blackjack! Push.";
+			player.addToWallet(bet);
+		}
 	}
 	else
 	{
+		// neither have blackjack
 		char choice;
 		int round = 1;
-		bool again = true;
+		bool doubleDown = false;
 
+		bool again = true;
 		while (again)
 		{
 			std::cout << "Dealer's cards: ";
@@ -125,7 +119,7 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 
 			std::cout << "Your cards: ";
 			player.getHand().show();
-			std::cout << " (" << player.getHand().getScore() << ")\n\n";
+			player.getHand().showScore();
 
 			std::cout << "What would you like to do?\n";
 			std::cout << "H - Hit\n";
@@ -148,7 +142,7 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			case 'S': // stand
 				std::cout << "\nStanding...\n\nYour hand: ";
 				player.getHand().show();
-				std::cout << " (" + std::to_string(player.getHand().getScore()) + ")\n\n";
+				player.getHand().showScore();
 
 				again = false;
 				break;
@@ -156,16 +150,18 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			case 'D': // double down
 				player.hit(dealer.deal());
 				player.addToWallet(-bet);
+				doubleDown = true;
 
 				std::cout << "\nDoubling down...\n\nYour hand: ";
 				player.getHand().show();
-				std::cout << " (" + std::to_string(player.getHand().getScore()) + ")\n\n";
+				player.getHand().showScore();
 
 				again = false;
 				break;
 
 			default:
 				std::cout << "\nInvalid choice. Try again.\n\n";
+
 				again = true;
 			}
 
@@ -175,15 +171,14 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 				{
 					std::cout << "Your cards: ";
 					player.getHand().show();
-					std::cout << " (" << player.getHand().getScore() << ")\n\n";
+					player.getHand().showScore();
 				}
 
-				std::cout << "Bust! You lose.\n";
+				std::cout << "Bust! You lose.";
 				again = false;
 			}
 		}
 
-		// dealer's cards don't matter if player busts
 		if (!player.getHand().isBust())
 		{
 			if (dealer.getHand().getScore() < 17)
@@ -201,34 +196,35 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			}
 
 			dealer.getHand().show();
-			std::cout << " (" + std::to_string(dealer.getHand().getScore()) + ")\n\n";
+			dealer.getHand().showScore();
 
 			if (dealer.getHand().getScore() > 21)
 			{
 				std::cout << "Dealer busts! You win!";
-				player.addToWallet(2 * bet);
+				player.addToWallet(((doubleDown) ? 4:2) * bet);
 			}
-			else if (dealer.getHand().getScore() > player.getHand().getScore())
+			else if (dealer.getHand().getScore()
+			> player.getHand().getScore())
 			{
 				std::cout << "You lose!";
 			}
-			else if (dealer.getHand().getScore() < player.getHand().getScore())
+			else if (dealer.getHand().getScore()
+			< player.getHand().getScore())
 			{
 				std::cout << "You win!";
-				player.addToWallet(2 * bet);
-
+				player.addToWallet(((doubleDown) ? 4:2) * bet);
 			}
 			else
 			{
 				std::cout << "Push!";
-				player.addToWallet(bet);
+				player.addToWallet(((doubleDown) ? 2:1) * bet);
 			}
 		}
 	}
 
 	if (player.getWallet() <= 0)
 	{
-		std::cout << "\n\nYour wallet is empty, goodbye!";
+		std::cout << "\n\nYour wallet is empty.";
 		return false;
 	}
 	else
@@ -250,6 +246,4 @@ bool Dealer::playRound(Player& player, Dealer& dealer)
 			return false;
 		}
 	}
-
-
 }
