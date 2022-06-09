@@ -6,7 +6,6 @@ int main()
 	Dealer dealer;
 
 	bool again = true;
-
 	while (again)
 	{
 		again = Dealer::playRound(player, dealer);

@@ -5,7 +5,7 @@ Dealer::Dealer()
 	this->top = 0;
 	Card deck[52];
 
-	// create deck of cards for creating shoe
+	// create deck of cards
 	int k = 0;
 	for (int i = 0; i < 4; i++)
 	{
@@ -21,7 +21,7 @@ Dealer::Dealer()
 	{
 		for (int j = 0; j < 52; j++)
 		{
-			this->shoe[52 * (i)+j] = deck[j];
+			this->shoe[52*i + j] = deck[j];
 		}
 	}
 
