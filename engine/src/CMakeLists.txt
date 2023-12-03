@@ -1,0 +1,12 @@
+target_sources(blackjackengine
+    PRIVATE
+        Card.h
+        Card.cpp
+        Hand.h
+        Hand.cpp
+        Shoe.h
+        Shoe.cpp
+        Player.h
+        Player.cpp
+        Blackjack.cpp
+)
