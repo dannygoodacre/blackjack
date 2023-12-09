@@ -6,7 +6,7 @@ project(blackjack
 )
 
 enable_testing()
-add_subdirectory(model/tests)
+add_subdirectory(engine/tests)
 
 add_library(blackjackengine STATIC "")
-add_subdirectory(model/src)
+add_subdirectory(engine/src)
