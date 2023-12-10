@@ -125,7 +125,7 @@ bool Blackjack::getIsRoundInProgress()
 
 std::vector<char> Blackjack::getPossibleMoves()
 {
-    if (getIsRoundInProgress())
+    if (!getIsRoundInProgress())
         return {};
     return data->possibleMoves;
 }
