@@ -53,7 +53,7 @@ void Blackjack::startRound(int bet)
     {
         if (isDealerBlackjack)
             data->outcome = 'D';
-        else 
+        else
             data->outcome = 'W';
     }
     else if (isDealerBlackjack)
@@ -83,11 +83,17 @@ void Blackjack::stand()
     int dealerScore = data->dealer.getHandScore();
 
     if (dealerScore > 21 || dealerScore < playerScore) // Win.
+    {
         data->outcome = 'W';
+        data->player.setWallet(data->player.getWallet() + 2*data->currentBet);
+    }
     else if (dealerScore > playerScore) // Loss.
         data->outcome = 'L';
     else // Push.
+    {
         data->outcome = 'D';
+        data->player.setWallet(data->player.getWallet() + data->currentBet);
+    }
 }
 
 void Blackjack::doubleDown()
