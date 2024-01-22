@@ -25,9 +25,10 @@ void Blackjack::setupGame(int initialPlayerWallet)
 
 void Blackjack::startRound(int bet)
 {
+    data->player.resetHand();
+    data->dealer.resetHand();
     data->isInProgress = true;
     data->currentBet = bet;
-
     data->player.setWallet(data->player.getWallet() - bet);
 
     data->possibleMoves = {'H', 'S'};

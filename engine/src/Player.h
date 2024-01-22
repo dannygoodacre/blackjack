@@ -14,6 +14,7 @@ public:
     int getHandScore();
     int getWallet();
     void setWallet(int n);
+    void resetHand();
 
 private:
     Hand hand;

@@ -30,3 +30,8 @@ void Player::setWallet(int n)
 {
     this->wallet = n;
 }
+
+void Player::resetHand()
+{
+    this->hand.reset();
+}
