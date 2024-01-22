@@ -64,8 +64,8 @@ void Blackjack::hit()
 {
     data->player.addToHand(data->shoe.drawCard());
 
-    if (data->player.getHandScore() == 21)
-        data->possibleMoves = {'S'};
+    if (data->player.getHandScore() >= 21)
+        Blackjack::stand();
 }
 
 void Blackjack::stand()
