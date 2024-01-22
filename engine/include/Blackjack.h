@@ -6,7 +6,7 @@ namespace Blackjack
     // Initialise the game.
     void setupGame(int initialPlayerWallet);
 
-    // Deal cards to player and dealer. 
+    // Deal cards to player and dealer.
     void startRound(int bet);
 
     // Draw a card.

@@ -63,6 +63,7 @@ void Blackjack::startRound(int bet)
 void Blackjack::hit()
 {
     data->player.addToHand(data->shoe.drawCard());
+    data->possibleMoves = {'H', 'S'};
 
     if (data->player.getHandScore() >= 21)
         Blackjack::stand();
@@ -73,9 +74,14 @@ void Blackjack::stand()
     data->isInProgress = false;
     data->possibleMoves.clear();
 
+    if (data->player.getHandScore() > 21)
+    {
+        data->outcome = 'L';
+        return;
+    }
+
     while (data->dealer.getHandScore() < 17)
         data->dealer.addToHand(data->shoe.drawCard());
-
     if (data->dealer.getHandScore() == 17 && data->dealer.getHand().isSoft())
         data->dealer.addToHand(data->shoe.drawCard());
 
@@ -99,7 +105,7 @@ void Blackjack::stand()
 void Blackjack::doubleDown()
 {
     data->isInProgress = false;
-    data->possibleMoves = {'H', 'S'};
+    data->player.setWallet(data->player.getWallet() - data->currentBet);
     data->currentBet *= 2;
     hit();
     stand();
