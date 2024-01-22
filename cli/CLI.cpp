@@ -113,7 +113,12 @@ bool CLI::roundLoop()
     int bet = CLI::getBet(getPlayerWallet());
     startRound(bet);
 
-    bool again = true;
+    bool again;
+    if (getOutcome())
+        again = false;
+    else
+        again = true;
+
     while (again)
     {
         printf("\n\n\n");
