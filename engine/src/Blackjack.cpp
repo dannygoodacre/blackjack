@@ -51,10 +51,17 @@ void Blackjack::startRound(int bet)
 
     if (isPlayerBlackjack)
     {
+        // TODO: Calculating outcome and crediting should be its own function.
         if (isDealerBlackjack)
+        {
             data->outcome = 'D';
+            data->player.setWallet(data->player.getWallet() + data->currentBet);
+        }
         else
+        {
             data->outcome = 'W';
+            data->player.setWallet(data->player.getWallet() + 2.5*data->currentBet);
+        }
     }
     else if (isDealerBlackjack)
         data->outcome = 'L';
