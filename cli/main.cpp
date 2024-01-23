@@ -9,16 +9,23 @@ int main()
 {
     Blackjack::setupGame(CLI::getStartingWallet());
 
+    bool isBroke;
     int choice;
     do
     {
         switch (choice = CLI::getMenuChoice())
         {
             case 1:
-                CLI::roundLoop();
+                isBroke = CLI::roundLoop();
                 break;
         }
         std::cout << "\n\n\n";
+
+        if (isBroke)
+        {
+            std::cout << "You ran out of funds, goodbye!\n";
+            return 0;
+        }
     }
     while (choice != 0);
 
