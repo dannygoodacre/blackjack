@@ -51,14 +51,14 @@ char readChar(std::string prompt)
 int CLI::getStartingWallet()
 {
     int n;
-    while ((n = readInt("Start: ")) <= 0);
+    while ((n = readInt("Starting wallet: ")) <= 0);
     return n;
 }
 
 int CLI::getBet(int currentWallet)
 {
     int n;
-    while ((n = readInt("\n\n\nBet (" + std::to_string(currentWallet) + "): ")) > currentWallet || n <= 0);
+    while ((n = readInt("Bet (" + std::to_string(currentWallet) + "): ")) > currentWallet || n <= 0);
     return n;
 }
 
@@ -110,6 +110,7 @@ void CLI::showHand(std::string name, std::vector<std::string> hand, bool showSco
 
 bool CLI::roundLoop()
 {
+    std::cout << "-------------------------\n";
     int bet = CLI::getBet(getPlayerWallet());
     startRound(bet);
 
@@ -121,8 +122,7 @@ bool CLI::roundLoop()
 
     while (again)
     {
-        printf("\n\n\n");
-        CLI::showHand("Dealer", getDealerHand(), false, true);
+        CLI::showHand("\nDealer", getDealerHand(), false, true);
         CLI::showHand("Player", getPlayerHand(), true);
 
         switch (CLI::getMove(getPossibleMoves()))
@@ -142,11 +142,12 @@ bool CLI::roundLoop()
         }
     }
 
-    printf("\n\n\n");
     char outcome = getOutcome();
+    std::cout << "\n";
     CLI::showHand("Dealer", getDealerHand(), true);
     CLI::showHand("Player", getPlayerHand(), true);
     std::cout << "Outcome: " << outcome << std::endl;
+    std::cout << "\n";
 
     return !getPlayerWallet();
 }

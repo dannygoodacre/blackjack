@@ -8,6 +8,7 @@
 int main()
 {
     Blackjack::setupGame(CLI::getStartingWallet());
+    std::cout<< "\n";
 
     bool isBroke;
     int choice;
@@ -19,7 +20,6 @@ int main()
                 isBroke = CLI::roundLoop();
                 break;
         }
-        std::cout << "\n\n\n";
 
         if (isBroke)
         {
@@ -29,6 +29,6 @@ int main()
     }
     while (choice != 0);
 
-    std::cout << "\n\nGoodbye!\n";
+    std::cout << "\nGoodbye!\n";
     return 0;
 }
