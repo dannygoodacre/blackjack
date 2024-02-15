@@ -35,4 +35,10 @@ namespace Blackjack
     char getOutcome();
 
     int getPlayerWallet();
+
+    int getNumberOfWins();
+
+    int getNumberOfLosses();
+
+    int getNumberOfDraws();
 }

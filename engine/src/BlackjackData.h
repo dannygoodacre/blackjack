@@ -15,4 +15,8 @@ public:
     int outcome;
     int currentBet;
     std::vector<char> possibleMoves;
+
+    int numWins;
+    int numLosses;
+    int numDraws;
 };

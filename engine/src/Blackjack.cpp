@@ -21,6 +21,9 @@ void Blackjack::setupGame(int initialPlayerWallet)
     data = new BlackjackData();
 
     data->player.setWallet(initialPlayerWallet);
+    data->numWins = 0;
+    data->numLosses = 0;
+    data->numDraws = 0;
 }
 
 void Blackjack::startRound(int bet)
@@ -56,15 +59,20 @@ void Blackjack::startRound(int bet)
         {
             data->outcome = 'D';
             data->player.setWallet(data->player.getWallet() + data->currentBet);
+            data->numDraws++;
         }
         else
         {
             data->outcome = 'W';
             data->player.setWallet(data->player.getWallet() + 2.5*data->currentBet);
+            data->numWins++;
         }
     }
     else if (isDealerBlackjack)
+    {
         data->outcome = 'L';
+        data->numLosses++;
+    }
 }
 
 void Blackjack::hit()
@@ -84,6 +92,7 @@ void Blackjack::stand()
     if (data->player.getHandScore() > 21)
     {
         data->outcome = 'L';
+        data->numLosses++;
         return;
     }
 
@@ -99,13 +108,18 @@ void Blackjack::stand()
     {
         data->outcome = 'W';
         data->player.setWallet(data->player.getWallet() + 2*data->currentBet);
+        data->numWins++;
     }
-    else if (dealerScore > playerScore) // Loss.
+    else if (dealerScore > playerScore)// Loss.
+    {
         data->outcome = 'L';
+        data->numLosses++;
+    }
     else // Push.
     {
         data->outcome = 'D';
         data->player.setWallet(data->player.getWallet() + data->currentBet);
+        data->numDraws++;
     }
 }
 
@@ -160,4 +174,19 @@ char Blackjack::getOutcome()
 int Blackjack::getPlayerWallet()
 {
     return data->player.getWallet();
+}
+
+int Blackjack::getNumberOfWins()
+{
+    return data->numWins;
+}
+
+int Blackjack::getNumberOfLosses()
+{
+    return data->numLosses;
+}
+
+int Blackjack::getNumberOfDraws()
+{
+    return data->numDraws;
 }

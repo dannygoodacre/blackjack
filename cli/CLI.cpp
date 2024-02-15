@@ -147,7 +147,8 @@ bool CLI::roundLoop()
     CLI::showHand("Dealer", getDealerHand(), true);
     CLI::showHand("Player", getPlayerHand(), true);
     std::cout << "Outcome: " << outcome << std::endl;
-    std::cout << "\n";
+    std::cout << "W/L/D: " << getNumberOfWins() << "/" << getNumberOfLosses() << "/" << getNumberOfDraws();
+    std::cout << "\n\n";
 
     return !getPlayerWallet();
 }
