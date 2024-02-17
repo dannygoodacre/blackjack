@@ -15,6 +15,7 @@ public:
     void reset();
 
     void addCard(Card card);
+    Hand split(Card card1, Card card2);
 
     bool isBlackjack();
     bool isBust();
@@ -23,7 +24,7 @@ public:
     int getScore();
     int getNumberOfCards();
     Card getCardAt(int n);
-    
+
     friend std::ostream& operator<<(std::ostream& os, const Hand& hand);
 
 private:

@@ -32,6 +32,17 @@ void Hand::addCard(Card card)
     this->updateScore(card);
 }
 
+Hand Hand::split(Card card1, Card card2)
+{
+    Hand newHand;
+    newHand.addCard(this->getCardAt(1));
+    this->cards.pop_back();
+    this->addCard(card1);
+    newHand.addCard(card2);
+
+    return newHand;
+}
+
 bool Hand::isBlackjack()
 {
     return this->score == 21 && this->numberOfCards == 2;
