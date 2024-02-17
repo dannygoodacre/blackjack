@@ -4,21 +4,30 @@ Player::Player()
 {}
 
 Player::Player(int initialWallet, Hand hand)
-: wallet(initialWallet), hand(hand) {}
-
-void Player::addToHand(Card card)
+: wallet(initialWallet)
 {
-    this->hand.addCard(card);
+    this->numberOfHands = 1;
+    this->hands[0] = hand;
 }
 
-Hand Player::getHand()
+void Player::addToHand(int n, Card card)
 {
-    return this->hand;
+    this->hands[n].addCard(card);
 }
 
-int Player::getHandScore()
+void Player::splitHand(int n, Card card1, Card card2)
 {
-    return this->hand.getScore();
+    this->hands[this->numberOfHands++] = this->hands[n].split(card1, card2);
+}
+
+Hand Player::getHand(int n)
+{
+    return this->hands[n];
+}
+
+int Player::getHandScore(int n)
+{
+    return this->hands[n].getScore();
 }
 
 int Player::getWallet()
@@ -31,7 +40,8 @@ void Player::setWallet(int n)
     this->wallet = n;
 }
 
-void Player::resetHand()
+void Player::resetHands()
 {
-    this->hand.reset();
+    for (int i = 0; i <= this->numberOfHands; i++)
+        this->hands[i].reset();
 }
