@@ -18,12 +18,13 @@ public:
     bool isAce();
 
     friend std::ostream& operator<<(std::ostream& os, const Card& card);
+    friend bool operator==(const Card& lhs, const Card& rhs);
 
-private:    
+private:
     std::string rank;
     std::string suit;
     int score;
-    
+
     static bool isNumber(std::string& s);
     static int calculateScore(std::string rank);
 };

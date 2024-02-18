@@ -37,6 +37,11 @@ std::ostream& operator<<(std::ostream& os, const Card& card)
     return os;
 }
 
+bool operator==(const Card& lhs, const Card& rhs)
+{
+    return lhs.rank == rhs.rank && lhs.suit == rhs.suit;
+}
+
 bool Card::isNumber(std::string& s)
 {
 	return !s.empty() && find_if(s.begin(), s.end(),
@@ -47,7 +52,7 @@ int Card::calculateScore(std::string rank)
 {
     if (isNumber(rank) && stoi(rank) > 1 && stoi(rank) < 11)
         return stoi(rank);
-    
+
     switch ((int) rank[0])
     {
         case 'A':
