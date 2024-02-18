@@ -12,9 +12,9 @@ public:
     Player player;
     Player dealer;
     bool isInProgress;
-    int outcome;
-    int currentBet;
-    std::vector<char> possibleMoves;
+    int outcome[4];
+    int currentBet[4];
+    std::vector<char> possibleMoves[4];
 
     int numWins;
     int numLosses;
