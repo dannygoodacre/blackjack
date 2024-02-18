@@ -48,7 +48,7 @@ INSTANTIATE_TEST_SUITE_P
     )
 );
 
-class HandIsSoftTestFixture 
+class HandIsSoftTestFixture
 : public testing::TestWithParam<std::tuple<Hand, bool>>
 {};
 
@@ -68,5 +68,29 @@ INSTANTIATE_TEST_SUITE_P
         std::make_tuple(Hand({Card("7", "d"), Card("8", "h")}), false),
         std::make_tuple(Hand({Card("Q", "h"), Card("A", "d")}), true),
         std::make_tuple(Hand({Card("K", "s"), Card("A", "h"), Card("3", "s")}), false)
+    )
+);
+
+class HandSplittingTestFixture
+: public testing::TestWithParam<std::tuple<Hand, Hand>>
+{};
+
+TEST_P(HandSplittingTestFixture, split)
+{
+    Hand hand = std::get<0>(GetParam());
+    Hand exSplitHand = std::get<1>(GetParam());
+
+    Hand splitHand = hand.split(Card("2", "c"), Card("2", "h"));
+    std::cout << splitHand << "\n";
+    ASSERT_EQ(exSplitHand.getCardAt(0), splitHand.getCardAt(0));
+}
+
+INSTANTIATE_TEST_SUITE_P
+(
+    HandSplittingTests,
+    HandSplittingTestFixture,
+    testing::Values
+    (
+        std::make_tuple(Hand({Card("A", "c"), Card("A", "d")}), Hand({Card("A", "d"), Card("2", "h")}))
     )
 );
