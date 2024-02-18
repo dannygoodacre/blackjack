@@ -21,6 +21,7 @@ void Blackjack::setupGame(int initialPlayerWallet)
     data = new BlackjackData();
 
     data->player.setWallet(initialPlayerWallet);
+    data->player.setNumberOfHands(1);
     data->numWins = 0;
     data->numLosses = 0;
     data->numDraws = 0;
@@ -131,6 +132,21 @@ void Blackjack::doubleDown(int n)
     data->currentBet[n] *= 2;
     hit(n);
     stand(n);
+}
+
+void Blackjack::split(int n)
+{
+    // Remove another bet from wallet.
+    data->player.setWallet(data->player.getWallet() - data->currentBet[n]);
+
+    // Add new bet.
+    data->currentBet[data->numHands] = data->currentBet[n];
+
+    data->player.splitHand(n);
+
+    // Hit the two new hands.
+    hit(n);
+    hit(data->numHands++);
 }
 
 std::vector<std::string> Blackjack::getPlayerHand(int n)
