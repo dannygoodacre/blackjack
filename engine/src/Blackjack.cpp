@@ -28,6 +28,7 @@ void Blackjack::setupGame(int initialPlayerWallet)
 
 void Blackjack::startRound(int bet)
 {
+    data->numHands = 1;
     data->player.resetHands();
     data->dealer.resetHands();
     data->isInProgress = true;
