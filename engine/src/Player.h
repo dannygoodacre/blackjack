@@ -9,14 +9,14 @@ class Player
 {
 public:
     Player();
-    Player(int initialWallet, Hand hand);
 
     void addToHand(int n, Card card);
-    void splitHand(int n, Card card1, Card card2);
+    void splitHand(int n);
     Hand getHand(int n);
     int getHandScore(int n);
     int getWallet();
     void setWallet(int n);
+    void setNumberOfHands(int n);
     void resetHands();
 
 private:
