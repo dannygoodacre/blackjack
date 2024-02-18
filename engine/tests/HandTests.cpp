@@ -80,8 +80,7 @@ TEST_P(HandSplittingTestFixture, split)
     Hand hand = std::get<0>(GetParam());
     Hand exSplitHand = std::get<1>(GetParam());
 
-    Hand splitHand = hand.split(Card("2", "c"), Card("2", "h"));
-    std::cout << splitHand << "\n";
+    Hand splitHand = hand.split();
     ASSERT_EQ(exSplitHand.getCardAt(0), splitHand.getCardAt(0));
 }
 
@@ -91,6 +90,6 @@ INSTANTIATE_TEST_SUITE_P
     HandSplittingTestFixture,
     testing::Values
     (
-        std::make_tuple(Hand({Card("A", "c"), Card("A", "d")}), Hand({Card("A", "d"), Card("2", "h")}))
+        std::make_tuple(Hand({Card("A", "c"), Card("A", "d")}), Hand({Card("A", "d")}))
     )
 );
