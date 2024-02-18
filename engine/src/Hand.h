@@ -15,7 +15,7 @@ public:
     void reset();
 
     void addCard(Card card);
-    Hand split(Card card1, Card card2);
+    Hand split();
 
     bool isBlackjack();
     bool isBust();

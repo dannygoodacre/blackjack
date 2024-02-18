@@ -32,13 +32,11 @@ void Hand::addCard(Card card)
     this->updateScore(card);
 }
 
-Hand Hand::split(Card card1, Card card2)
+Hand Hand::split()
 {
-    Hand newHand;
-    newHand.addCard(this->getCardAt(1));
+    Hand newHand({this->getCardAt(1)});
     this->cards.pop_back();
-    this->addCard(card1);
-    newHand.addCard(card2);
+    this->numberOfCards--;
 
     return newHand;
 }
