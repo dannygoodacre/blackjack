@@ -35,6 +35,7 @@ void Hand::addCard(Card card)
 Hand Hand::split()
 {
     Hand newHand({this->getCardAt(1)});
+    this->score -= this->getCardAt(1).getScore();
     this->cards.pop_back();
     this->numberOfCards--;
 
