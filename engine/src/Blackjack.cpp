@@ -32,7 +32,7 @@ void Blackjack::startRound(int bet)
     data->numHands = 1;
     data->player.resetHands();
     data->dealer.resetHands();
-    data->isInProgress = true;
+    data->isInProgress[0] = true;
     data->currentBet[0] = bet;
     data->player.setWallet(data->player.getWallet() - bet);
 
@@ -54,7 +54,7 @@ void Blackjack::startRound(int bet)
     if (!isPlayerBlackjack && !isDealerBlackjack)
         return;
 
-    data->isInProgress = false;
+    data->isInProgress[0] = false;
     data->possibleMoves[0].clear();
 
     if (isPlayerBlackjack)
@@ -94,7 +94,7 @@ void Blackjack::hit(int n)
 
 void Blackjack::stand(int n)
 {
-    data->isInProgress = false;
+    data->isInProgress[n] = false;
     data->possibleMoves[n].clear();
 
     if (data->player.getHandScore(n) > 21)
@@ -133,7 +133,7 @@ void Blackjack::stand(int n)
 
 void Blackjack::doubleDown(int n)
 {
-    data->isInProgress = false;
+    data->isInProgress[n] = false;
     data->player.setWallet(data->player.getWallet() - data->currentBet[n]);
     data->currentBet[n] *= 2;
     hit(n);
@@ -177,7 +177,10 @@ int Blackjack::getDealerHandScore()
 
 bool Blackjack::getIsRoundInProgress()
 {
-    return data->isInProgress;
+    for (int i = 0; i < 4; i++)
+        if (data->isInProgress[i])
+            return true;
+    return false;
 }
 
 std::vector<char> Blackjack::getPossibleMoves(int n)
