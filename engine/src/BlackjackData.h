@@ -11,7 +11,7 @@ public:
     Shoe shoe;
     Player player;
     Player dealer;
-    bool isInProgress;
+    bool isInProgress[4];
     int outcome[4];
     int currentBet[4];
     std::vector<char> possibleMoves[4];
