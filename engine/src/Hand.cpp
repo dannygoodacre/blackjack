@@ -57,6 +57,11 @@ bool Hand::isSoft()
     return this->numberOfSoftAces > 0;
 }
 
+bool Hand::isSplittable()
+{
+    return this->cards[0].getRank() == this->cards[1].getRank();
+}
+
 int Hand::getScore()
 {
     return this->score;

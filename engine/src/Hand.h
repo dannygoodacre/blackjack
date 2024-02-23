@@ -20,6 +20,7 @@ public:
     bool isBlackjack();
     bool isBust();
     bool isSoft();
+    bool isSplittable();
 
     int getScore();
     int getNumberOfCards();
