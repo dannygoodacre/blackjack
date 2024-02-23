@@ -44,4 +44,6 @@ namespace Blackjack
     int getNumberOfLosses();
 
     int getNumberOfDraws();
+
+    int getNumberOfHands();
 }

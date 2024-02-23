@@ -216,3 +216,8 @@ int Blackjack::getNumberOfDraws()
 {
     return data->numDraws;
 }
+
+int Blackjack::getNumberOfHands()
+{
+    return data->numHands;
+}
