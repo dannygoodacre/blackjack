@@ -136,40 +136,42 @@ bool CLI::roundLoop()
     startRound(bet);
 
     bool again;
-    if (getOutcome())
+    if (!getIsRoundInProgress())
         again = false;
     else
         again = true;
 
     while (again)
     {
-        CLI::showHand("\nDealer", getDealerHand(), false, true);
-        CLI::showHand("Player", getPlayerHand(), true);
-
-        switch (CLI::getMove(getPossibleMoves()))
+        for (const auto& n : getHandsInPlay())
         {
-            case 'H':
-                hit();
-                again = getIsRoundInProgress();
-                break;
-            case 'S':
-                stand();
-                again = false;
-                break;
-            case 'D':
-                doubleDown();
-                again = false;
-                break;
+            std::cout << "\n";
+            CLI::showDealerHand();
+            CLI::showPlayerHands(n);
+
+            switch (CLI::getMove(getPossibleMoves(n)))
+            {
+                case 'H':
+                    hit(n);
+                    break;
+                case 'S':
+                    stand(n);
+                    break;
+                case 'D':
+                    doubleDown(n);
+                    break;
+                case 'P':
+                    split(n);
+                    break;
+            }
+            again = getIsRoundInProgress();
         }
     }
 
-    char outcome = getOutcome();
-    std::cout << "\n";
-    CLI::showHand("Dealer", getDealerHand(), true);
-    CLI::showHand("Player", getPlayerHand(), true);
-    std::cout << "Outcome: " << outcome << std::endl;
-    std::cout << "W/L/D: " << getNumberOfWins() << "/" << getNumberOfLosses() << "/" << getNumberOfDraws();
+    CLI::showDealerHand(true);
+    CLI::showPlayerHands();
     std::cout << "\n\n";
+    showOutcomes();
 
     return !getPlayerWallet();
 }
