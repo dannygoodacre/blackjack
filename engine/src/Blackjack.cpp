@@ -32,7 +32,11 @@ void Blackjack::startRound(int bet)
     data->numHands = 1;
     data->player.resetHands();
     data->dealer.resetHands();
+
     data->isInProgress[0] = true;
+    for (int i = 1; i < 4; i++)
+        data->isInProgress[i] = false;
+
     data->currentBet[0] = bet;
     data->player.setWallet(data->player.getWallet() - bet);
 
@@ -149,6 +153,7 @@ void Blackjack::split(int n)
     data->currentBet[data->numHands] = data->currentBet[n];
 
     data->player.splitHand(n);
+    data->isInProgress[data->numHands] = true;
 
     // Hit the two new hands.
     hit(n);
