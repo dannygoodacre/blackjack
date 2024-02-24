@@ -95,16 +95,34 @@ char CLI::getMove(std::vector<char> possibleMoves)
     return c;
 }
 
-void CLI::showHand(std::string name, std::vector<std::string> hand, bool showScore, bool hideSecondCard)
+void CLI::showOutcomes()
 {
-    std::cout << name << ": ";
-    for (int i = 0; i < hand.size(); i++)
-        std::cout << (i == 1 && hideSecondCard ? "XX" : hand[i]) << " ";
-    if (showScore)
+    std::cout << "W/L/D : " << getNumberOfWins() << "/" << getNumberOfLosses() << "/" << getNumberOfDraws() << "\n";
+}
+
+void CLI::showPlayerHands(int handInPlay)
+{
+    std::cout << "Player:\n";
+    for (int i = 0; i < getNumberOfHands(); i++)
     {
-        int score = name == "Dealer" ? getDealerHandScore() : getPlayerHandScore();
-        std::cout << "(" << score << ")";
+        std::vector<std::string> hand = getPlayerHand(i);
+
+        for (int j = 0; j < hand.size(); j++)
+            std::cout << hand[j] << " ";
+        std::cout << "(" << getPlayerHandScore(i) << ")" << (handInPlay == i ? " <-" : "") << "\n";
     }
+}
+
+void CLI::showDealerHand(bool isRoundOver)
+{
+    std::vector<std::string> hand = getDealerHand();
+
+    std::cout << "Dealer: ";
+    for (int i = 0; i < hand.size(); i++)
+        std::cout << (i == 1 && !isRoundOver ? "XX" : hand[i]) << " ";
+
+    if (isRoundOver)
+        std::cout << "(" << getDealerHandScore() << ")";
     std::cout << std::endl;
 }
 
