@@ -1,6 +1,8 @@
 #include "../include/Blackjack.h"
 #include "BlackjackData.h"
 
+#include <algorithm>
+
 BlackjackData *data;
 
 std::vector<std::string> getHandAsVectorString(Player p, int n)
@@ -101,38 +103,8 @@ void Blackjack::stand(int n)
     data->isInProgress[n] = false;
     data->possibleMoves[n].clear();
 
-    if (data->player.getHandScore(n) > 21)
-    {
-        data->outcome[n] = 'L';
-        data->numLosses++;
-        return;
-    }
-
-    while (data->dealer.getHandScore(n) < 17)
-        data->dealer.addToHand(n, data->shoe.drawCard());
-    if (data->dealer.getHandScore(n) == 17 && data->dealer.getHand(n).isSoft())
-        data->dealer.addToHand(n, data->shoe.drawCard());
-
-    int playerScore = data->player.getHandScore(n);
-    int dealerScore = data->dealer.getHandScore(n);
-
-    if (dealerScore > 21 || dealerScore < playerScore) // Win.
-    {
-        data->outcome[n] = 'W';
-        data->player.setWallet(data->player.getWallet() + 2*data->currentBet[n]);
-        data->numWins++;
-    }
-    else if (dealerScore > playerScore)// Loss.
-    {
-        data->outcome[n] = 'L';
-        data->numLosses++;
-    }
-    else // Push.
-    {
-        data->outcome[n] = 'D';
-        data->player.setWallet(data->player.getWallet() + data->currentBet[n]);
-        data->numDraws++;
-    }
+    if (!Blackjack::getIsRoundInProgress())
+        Blackjack::endRound();
 }
 
 void Blackjack::doubleDown(int n)
@@ -158,6 +130,51 @@ void Blackjack::split(int n)
     // Hit the two new hands.
     hit(n);
     hit(data->numHands++);
+}
+
+void Blackjack::endRound()
+{
+    std::vector<int> alreadyChecked;
+
+    for (int i = 0; i < data->numHands; i++)
+        if (data->player.getHandScore(i) > 21)
+        {
+            data->outcome[i] = 'L';
+            data->numLosses++;
+            alreadyChecked.push_back(i);
+        }
+
+    while (data->dealer.getHandScore(0) < 17)
+        data->dealer.addToHand(0, data->shoe.drawCard());
+    if (data->dealer.getHandScore(0) == 17 && data->dealer.getHand(0).isSoft())
+        data->dealer.addToHand(0, data->shoe.drawCard());
+
+    for (int i = 0; i < data->numHands; i++)
+    {
+        if (std::find(alreadyChecked.begin(), alreadyChecked.end(), i) != alreadyChecked.end())
+            continue;
+
+        int playerScore = data->player.getHandScore(i);
+        int dealerScore = data->dealer.getHandScore(0);
+
+        if (dealerScore > 21 || dealerScore < playerScore)
+        {
+            data->outcome[i] = 'W';
+            data->player.setWallet(data->player.getWallet() + 2*data->currentBet[i]);
+            data->numWins++;
+        }
+        else if (dealerScore > playerScore)
+        {
+            data->outcome[i] = 'L';
+            data->numLosses++;
+        }
+        else
+        {
+            data->outcome[i] = 'D';
+            data->player.setWallet(data->player.getWallet() + data->currentBet[i]);
+            data->numDraws++;
+        }
+    }
 }
 
 std::vector<std::string> Blackjack::getPlayerHand(int n)
