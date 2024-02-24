@@ -84,6 +84,9 @@ char CLI::getMove(std::vector<char> possibleMoves)
                 break;
             case 'D':
                 std::cout << "D - double down\n";
+                break;
+            case 'P':
+                std::cout << "P - split\n";
         }
     }
 
