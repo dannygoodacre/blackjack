@@ -51,7 +51,7 @@ void Blackjack::startRound(int bet)
     data->player.addToHand(0, data->shoe.drawCard());
     data->dealer.addToHand(0, data->shoe.drawCard());
 
-    if (data->player.getHand(0).isSplittable());
+    if (data->player.getHand(0).isSplittable())
         data->possibleMoves[0].push_back('P');
 
     bool isPlayerBlackjack = data->player.getHandScore(0) == 21;
