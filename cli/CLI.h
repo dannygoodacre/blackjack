@@ -11,7 +11,11 @@ namespace CLI
 
     char getMove(std::vector<char> possibleMoves);
 
-    void showHand(std::string name, std::vector<std::string> hand, bool hideScore, bool hideSecondCard = false);
+    void showOutcomes();
+
+    void showPlayerHands(int handInPlay = -1);
+
+    void showDealerHand(bool isRoundOver = false);
 
     bool roundLoop();
 }
