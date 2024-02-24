@@ -21,6 +21,8 @@ namespace Blackjack
     // Split the hand, drawing a new card to each.
     void split(int n);
 
+    void endRound();
+
     std::vector<std::string> getPlayerHand(int n);
 
     std::vector<std::string> getDealerHand();
