@@ -221,3 +221,12 @@ int Blackjack::getNumberOfHands()
 {
     return data->numHands;
 }
+
+std::vector<int> Blackjack::getHandsInPlay()
+{
+    std::vector<int> out;
+    for (int i = 0; i < 4; i++)
+        if (!data->possibleMoves[i].empty())
+            out.push_back(i);
+    return out;
+}

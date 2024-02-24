@@ -46,4 +46,6 @@ namespace Blackjack
     int getNumberOfDraws();
 
     int getNumberOfHands();
+
+    std::vector<int> getHandsInPlay();
 }
