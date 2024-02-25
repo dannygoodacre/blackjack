@@ -148,6 +148,7 @@ bool CLI::roundLoop()
             std::cout << "\n";
             CLI::showDealerHand();
             CLI::showPlayerHands(n);
+            std::cout << "\n";
 
             switch (CLI::getMove(getPossibleMoves(n)))
             {
@@ -168,9 +169,10 @@ bool CLI::roundLoop()
         }
     }
 
+    std::cout << "\n";
     CLI::showDealerHand(true);
     CLI::showPlayerHands();
-    std::cout << "\n\n";
+    std::cout << "\n";
     showOutcomes();
 
     return !getPlayerWallet();
