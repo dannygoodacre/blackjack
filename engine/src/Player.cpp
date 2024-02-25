@@ -40,6 +40,11 @@ void Player::setNumberOfHands(int n)
 
 void Player::resetHands()
 {
-    for (int i = 0; i <= this->numberOfHands; i++)
+    for (int i = 0; i < this->numberOfHands; i++)
         this->hands[i].reset();
+}
+
+int Player::getNumberOfHands()
+{
+    return this->numberOfHands;
 }

@@ -18,6 +18,7 @@ public:
     void setWallet(int n);
     void setNumberOfHands(int n);
     void resetHands();
+    int getNumberOfHands();
 
 private:
     Hand hands[4];
