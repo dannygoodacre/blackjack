@@ -93,7 +93,7 @@ void Blackjack::hit(int n)
     data->player.addToHand(n, data->shoe.drawCard());
     data->possibleMoves[n] = {'H', 'S'};
 
-    if (data->player.getHand(n).isSplittable() && data->player.getWallet() >= data->currentBet[n])
+    if (data->player.getHand(n).isSplittable() && data->player.getWallet() >= data->currentBet[n] && data->player.getNumberOfHands() < 4)
         data->possibleMoves[n].push_back('P');
 
     if (data->player.getHandScore(n) >= 21)
