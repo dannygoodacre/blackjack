@@ -51,8 +51,14 @@ void Blackjack::startRound(int bet)
     data->player.addToHand(0, data->shoe.drawCard());
     data->dealer.addToHand(0, data->shoe.drawCard());
 
+    data->possibleMoves[0] = {'H', 'S'};
+    if (data->player.getWallet() >= data->currentBet[0])
+    {
+        data->possibleMoves[0].push_back('D');
+
     if (data->player.getHand(0).isSplittable())
         data->possibleMoves[0].push_back('P');
+    }
 
     bool isPlayerBlackjack = data->player.getHandScore(0) == 21;
     bool isDealerBlackjack = data->dealer.getHandScore(0) == 21;
@@ -91,7 +97,7 @@ void Blackjack::hit(int n)
     data->player.addToHand(n, data->shoe.drawCard());
     data->possibleMoves[n] = {'H', 'S'};
 
-    if (data->player.getHand(n).isSplittable())
+    if (data->player.getHand(n).isSplittable() && data->player.getWallet() >= data->currentBet[n])
         data->possibleMoves[n].push_back('P');
 
     if (data->player.getHandScore(n) >= 21)
