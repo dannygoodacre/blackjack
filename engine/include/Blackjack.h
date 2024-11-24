@@ -3,51 +3,128 @@
 
 namespace Blackjack
 {
-    // Initialise the game.
+    /**
+     * Set up the game.
+     * @param initialPlayerWallet The initial amount of money the player has.
+     */
     void setupGame(int initialPlayerWallet);
 
-    // Deal cards to player and dealer.
+    /**
+     * Start a new round.
+     * @param bet The amount of money to bet.
+     */
     void startRound(int bet);
 
-    // Draw a card.
+    /**
+     * Draw a card.
+     * @param n The index of the hand.
+     */
     void hit(int n);
 
-    // Draw no more cards and end the round.
+    /**
+     * Draw no more cards and end the round.
+     * @param n The index of the hand.
+     */
     void stand(int n);
-
-    // Double your bet and draw one more card.
+    
+    /**
+     * Draw one more card and double the bet, and end the round.
+     * @param n The index of the hand.
+     */
     void doubleDown(int n);
 
-    // Split the hand, drawing a new card to each.
+    /**
+     * Split a hand into two hands, drawing a new card for each hand and 
+     * betting the same amount as the original bet on each.
+     * @param n The index of the hand to split.
+     */
     void split(int n);
 
+    /**
+     * End the current round.
+     */
     void endRound();
 
+    /**
+     * Get the cards in the player's hand.
+     * @param n The index of the hand.
+     * @return A vector of strings representing the cards in the hand.
+     */
     std::vector<std::string> getPlayerHand(int n);
 
+    /**
+     * Get the cards in the dealer's hand.
+     * @return A vector of strings representing the cards in the hand.
+     */
     std::vector<std::string> getDealerHand();
 
-    int getPlayerHandScore(int n);
-
-    int getDealerHandScore();
-
-    bool getIsRoundInProgress();
-
-    // Return possible moves, or an empty vector if round not in progress.
+    /**
+     * Get the possible moves for a hand.
+     * @param n The index of the hand.
+     * @return A vector of possible moves or an empty vector if round not in 
+     * progress.
+     */
     std::vector<char> getPossibleMoves(int n);
 
-    // Return the result of the round, or 0 if in progress.
+    /**
+     * Get the outcome of the round.
+     * @param n The index of the hand.
+     * @return The outcome of the round or 0 if in progress.
+     */
     char getOutcome(int n);
 
+    /**
+     * Get the amount of money the player has.
+     * @return The amount of money the player has.
+     */
     int getPlayerWallet();
 
-    int getNumberOfWins();
-
-    int getNumberOfLosses();
-
-    int getNumberOfDraws();
-
+    /**
+     * Get the number of hands in play.
+     * @return The number of hands in play.
+     */
     int getNumberOfHands();
 
+    /**
+     * Get the hands in play.
+     * @return A vector of indices of the hands in play.
+     */
     std::vector<int> getHandsInPlay();
+
+    /**
+     * Get the score of a player's hand.
+     * @param n The index of the hand.
+     * @return The score of the hand.
+     */
+    int getPlayerHandScore(int n);
+
+    /**
+     * Get the score of the dealer's hand.
+     * @return The score of the hand.
+     */
+    int getDealerHandScore();
+
+    /**
+     * Get whether a round is in progress.
+     * @return True if a round is in progress, false if not.
+     */
+    bool getIsRoundInProgress();
+
+    /**
+     * Get the number of wins.
+     * @return The number of wins.
+     */
+    int getNumberOfWins();
+
+    /**
+     * Get the number of losses.
+     * @return The number of losses.
+     */
+    int getNumberOfLosses();
+
+    /**
+     * Get the number of draws.
+     * @return The number of draws.
+     */
+    int getNumberOfDraws();   
 }
