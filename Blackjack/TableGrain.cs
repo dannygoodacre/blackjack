@@ -1,7 +1,6 @@
 namespace Blackjack;
 
-public class TableGrain([PersistentState(stateName: "gameState", storageName: "TableStateStore")] IPersistentState<TableState> state)
-    : Grain, ITableGrain
+public class TableGrain : Grain, ITableGrain
 {
     private readonly TableAggregate _aggregate = new();
 

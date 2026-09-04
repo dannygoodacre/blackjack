@@ -10,4 +10,8 @@
       <PackageReference Include="dannygoodacre.cqrs" Version="0.11.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Blackjack.Domain\Blackjack.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

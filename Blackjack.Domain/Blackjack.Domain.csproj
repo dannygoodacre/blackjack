@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Reference Include="DannyGoodacre.Primitives">
+        <HintPath>..\..\..\.nuget\packages\dannygoodacre.primitives\0.11.1\lib\net10.0\DannyGoodacre.Primitives.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

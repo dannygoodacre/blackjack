@@ -1,11 +1,11 @@
+using Blackjack.Domain;
 using DannyGoodacre.Cqrs;
 using DannyGoodacre.Primitives;
 using Microsoft.Extensions.Logging;
 
 namespace Blackjack.Application.Commands;
 
-// Should contain table aggregate object itself
-public record HitCommand(Guid TableId, Guid PlayerId) : ICommand;
+public record HitCommand(TableAggregate TableAggregate, Guid PlayerId, Guid HandId) : ICommand;
 
 public sealed class HitCommandHandler(ILogger logger, IStateUnit stateUnit) : StateCommandHandler<HitCommand>(logger, stateUnit)
 {

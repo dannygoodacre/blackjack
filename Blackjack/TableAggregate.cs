@@ -100,7 +100,7 @@ public abstract record DomainEvent(string StreamId) : IDomainEvent
 public record ShoeShuffledEvent(
     string StreamId,
     string RoundId,
-    Shoe shoe
+    IReadOnlyList<Card> Cards
 ) : DomainEvent(StreamId);
 
 public record CardDealtEvent(
