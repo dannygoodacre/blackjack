@@ -19,7 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Blackjack.Application\Blackjack.Application.csproj" />
       <ProjectReference Include="..\Blackjack.Domain\Blackjack.Domain.csproj" />
+      <ProjectReference Include="..\Blackjack.Requests\Blackjack.Requests.csproj" />
     </ItemGroup>
 
 </Project>

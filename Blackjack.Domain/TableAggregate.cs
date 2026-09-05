@@ -5,9 +5,9 @@ namespace Blackjack.Domain;
 
 public sealed class TableAggregate
 {
-    private List<Card> Shoe { get; set; } = [];
+    private readonly List<Card> _shoe = [];
 
-    private List<Player> Players { get; set; } = [];
+    private readonly Dictionary<Guid, Player> _players = [];
 
     public IResult<IEnumerable<IDomainEvent>> CreateShoe(int numberOfDecks, int randomSeed)
     {
@@ -24,18 +24,31 @@ public sealed class TableAggregate
         {
             foreach (Card card in deck)
             {
-                Shoe.Add(card);
+                _shoe.Add(card);
             }
         }
 
         var random = new Random(randomSeed);
 
-        random.Shuffle(CollectionsMarshal.AsSpan(Shoe));
+        random.Shuffle(CollectionsMarshal.AsSpan(_shoe));
     }
 
-    public
+    public IResult<IEnumerable<IDomainEvent>> AddPlayer(Guid id, string name)
+    {
+        if (_players.ContainsKey(id))
+        {
+            return Result<IEnumerable<IDomainEvent>>.DomainError("Player already at table");
+        }
 
-    public bool ContainsPlayer(Guid playerId) => Players.Exists(x => x.Id == playerId);
+        _players.Add(id, new Player(id, name));
 
-    // TODO: Method to add player to table.
+        return Result.Success(new List<IDomainEvent>());
+    }
+
+    public IResult<IEnumerable<IDomainEvent>> HitPlayer(Guid playerId, Guid handId)
+    {
+
+    }
+
+    public bool ContainsPlayer(Guid playerId) => _players.ContainsKey(playerId);
 }

@@ -1,16 +1,19 @@
 using Blackjack.Grains;
-using Blackjack.Grains.Requests;
+using Blackjack.Requests;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Orleans;
 
 namespace Blackjack.Web;
 
-public class BlackjackHub(IGrainFactory grainFactory) : Hub
+public class BlackjackHub(IGrainFactory factory) : Hub
 {
-    public async Task<IResult> HitAsync(HitRequest request)
+    public async Task<IActionResult> AddPlayerAsync(AddPlayerRequest request, CancellationToken cancellationToken = default)
     {
-        var grain = grainFactory.GetGrain<ITableGrain>(request.TableId);
+        var grain = factory.GetGrain<ITableGrain>(request.TableId);
 
-        await grain.HitAsync(request);
+        var result = await grain.AddPlayerAsync(request, cancellationToken);
+
+        return result.ToHttpResponse();
     }
 }

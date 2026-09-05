@@ -1,8 +1,6 @@
 namespace Blackjack.Domain;
 
-public sealed record Player
+public sealed record Player(Guid Id, string Name)
 {
-    public Guid Id { get; init; }
-
-    public List<Card> Hand { get; init; } = [];
+    public List<Hand> Hands { get; init; } = [];
 }
