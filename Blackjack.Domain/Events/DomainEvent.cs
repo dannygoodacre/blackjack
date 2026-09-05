@@ -4,16 +4,14 @@ public interface IDomainEvent
 {
     public Guid Id { get; init; }
 
-    string StreamId { get; init; }
-
     DateTime Timestamp { get; init; }
 }
 
-public abstract record DomainEvent(string StreamId) : IDomainEvent
+public abstract record DomainEvent : IDomainEvent
 {
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public string StreamId { get; init; } = StreamId;
-
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
 }
+
+public sealed record PlayerAdded(Guid PlayerId, string Name) : DomainEvent;

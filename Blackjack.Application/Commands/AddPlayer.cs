@@ -5,17 +5,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Blackjack.Application.Commands;
 
-public interface IHit
+public interface IAddPlayer
 {
     Task<IResult> ExecuteAsync(AddPlayerCommand command, CancellationToken cancellationToken = default);
 }
 
-public record AddPlayerCommand(Guid Id, string Name) : ICommand;
+public record AddPlayerCommand(Guid PlayerId, string Name) : ICommand;
 
-public sealed class AddPlayerCommandHandler(ILogger logger, IStateUnit stateUnit, TableContext context)
-    : StateCommandHandler<AddPlayerCommand>(logger, stateUnit), IHit
+internal sealed class AddPlayerCommandHandler(ILogger<AddPlayerCommandHandler> logger, IEventStateUnit eventStateUnit, TableContext context)
+    : StateCommandHandler<AddPlayerCommand>(logger, eventStateUnit), IAddPlayer
 {
     protected override string CommandName => "Hit";
+
+    private readonly TableAggregate _aggregate = context.Aggregate;
 
     protected override void Validate(ValidationState validationState, AddPlayerCommand command)
     {
@@ -24,11 +26,16 @@ public sealed class AddPlayerCommandHandler(ILogger logger, IStateUnit stateUnit
 
     protected override Task<IResult> InternalExecuteAsync(AddPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        TableAggregate table = context.Aggregate;
+        IResult<List<IDomainEvent>> result = _aggregate.AddPlayer(command.PlayerId, command.Name);
 
-        IResult<IEnumerable<IDomainEvent>> result = table.AddPlayer(command.Id, command.Name);
+        if (result is not Success<List<IDomainEvent>>(var events))
+        {
+            return Task.FromResult<IResult>(result);
+        }
 
+        eventStateUnit.Append(_aggregate.Id, events);
 
+        return Task.FromResult(Success());
     }
 
     protected override Task AfterSaveAsync(AddPlayerCommand command, CancellationToken cancellationToken = default)

@@ -3,13 +3,15 @@ using DannyGoodacre.Primitives;
 
 namespace Blackjack.Domain;
 
-public sealed class TableAggregate
+public sealed class TableAggregate(Guid id)
 {
+    public Guid Id { get; init; } = id;
+
     private readonly List<Card> _shoe = [];
 
     private readonly Dictionary<Guid, Player> _players = [];
 
-    public IResult<IEnumerable<IDomainEvent>> CreateShoe(int numberOfDecks, int randomSeed)
+    public IResult<List<IDomainEvent>> CreateShoe(int numberOfDecks, int randomSeed)
     {
         List<Card> deck = (
             from rank in Enum.GetValues<Rank>()
@@ -31,23 +33,22 @@ public sealed class TableAggregate
         var random = new Random(randomSeed);
 
         random.Shuffle(CollectionsMarshal.AsSpan(_shoe));
-    }
-
-    public IResult<IEnumerable<IDomainEvent>> AddPlayer(Guid id, string name)
-    {
-        if (_players.ContainsKey(id))
-        {
-            return Result<IEnumerable<IDomainEvent>>.DomainError("Player already at table");
-        }
-
-        _players.Add(id, new Player(id, name));
 
         return Result.Success(new List<IDomainEvent>());
     }
 
-    public IResult<IEnumerable<IDomainEvent>> HitPlayer(Guid playerId, Guid handId)
+    public IResult<List<IDomainEvent>> AddPlayer(Guid playerId, string name)
     {
+        if (_players.ContainsKey(playerId))
+        {
+            return Result<List<IDomainEvent>>.DomainError("Player already at table");
+        }
 
+        _players.Add(playerId, new Player(playerId, name));
+
+        var @event = new PlayerAdded(playerId, name);
+
+        return Result.Success(new List<IDomainEvent> { @event });
     }
 
     public bool ContainsPlayer(Guid playerId) => _players.ContainsKey(playerId);

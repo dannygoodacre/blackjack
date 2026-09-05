@@ -4,7 +4,6 @@ using Blackjack.Domain;
 using Blackjack.Requests;
 using DannyGoodacre.Primitives;
 using Microsoft.Extensions.DependencyInjection;
-using Orleans;
 
 namespace Blackjack.Grains;
 
@@ -18,7 +17,7 @@ public sealed class TableGrain(IServiceProvider serviceProvider) : Grain, ITable
 
         // TODO: Fetch from Marten, etc.
         // This only runs once when the grain boots. Afterwards it uses the grain already in memory.
-        _aggregate = new TableAggregate();
+        _aggregate = new TableAggregate(tableId);
 
         return Task.CompletedTask;
     }
@@ -31,8 +30,8 @@ public sealed class TableGrain(IServiceProvider serviceProvider) : Grain, ITable
 
         context.Aggregate = _aggregate;
 
-        var hit = scope.ServiceProvider.GetRequiredService<IHit>();
+        var hit = scope.ServiceProvider.GetRequiredService<IAddPlayer>();
 
-        return hit.ExecuteAsync(request)
+        return await hit.ExecuteAsync(request.ToCommand(), cancellationToken);
     }
 }

@@ -15,7 +15,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Blackjack.Grains\Blackjack.Grains.csproj" />
+      <ProjectReference Include="..\Blackjack.Marten\Blackjack.Marten.csproj" />
       <ProjectReference Include="..\Blackjack.Requests\Blackjack.Requests.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Orleans.Runtime" Version="10.3.1" />
     </ItemGroup>
 
 </Project>
