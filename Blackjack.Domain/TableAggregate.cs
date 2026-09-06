@@ -52,4 +52,9 @@ public sealed class TableAggregate(Guid id)
     }
 
     public bool ContainsPlayer(Guid playerId) => _players.ContainsKey(playerId);
+
+    public void Apply(PlayerAdded @event)
+    {
+        _players.Add(@event.PlayerId, new Player(@event.PlayerId, @event.Name));
+    }
 }

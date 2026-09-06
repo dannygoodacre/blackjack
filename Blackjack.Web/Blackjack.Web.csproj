@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Blackjack.Grains\Blackjack.Grains.csproj" />
-      <ProjectReference Include="..\Blackjack.Marten\Blackjack.Marten.csproj" />
+      <ProjectReference Include="..\Blackjack.Events\Blackjack.Events.csproj" />
       <ProjectReference Include="..\Blackjack.Requests\Blackjack.Requests.csproj" />
     </ItemGroup>
 

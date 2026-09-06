@@ -21,6 +21,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Blackjack.Application\Blackjack.Application.csproj" />
       <ProjectReference Include="..\Blackjack.Domain\Blackjack.Domain.csproj" />
+      <ProjectReference Include="..\Blackjack.Events\Blackjack.Events.csproj" />
       <ProjectReference Include="..\Blackjack.Requests\Blackjack.Requests.csproj" />
     </ItemGroup>
 
@@ -30,6 +31,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Orleans.Sdk" Version="10.3.1" />
+      <PackageReference Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="10.3.1" />
     </ItemGroup>
 
 </Project>

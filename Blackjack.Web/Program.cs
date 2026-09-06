@@ -33,7 +33,8 @@ class Program
 
         IResult result = await grain.AddPlayerAsync(new AddPlayerRequest
         {
-            Id = Guid.NewGuid(),
+            StreamId = Guid.NewGuid(),
+            PlayerId = Guid.NewGuid(),
             Name = "Player Name"
         }, CancellationToken.None);
     }

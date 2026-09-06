@@ -5,5 +5,5 @@
 public abstract record Request
 {
     [Id(0)]
-    public Guid TableId { get; init; }
+    public Guid StreamId { get; init; }
 }

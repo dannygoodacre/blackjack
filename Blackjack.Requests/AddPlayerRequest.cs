@@ -5,7 +5,7 @@ namespace Blackjack.Requests;
 public sealed record AddPlayerRequest : Request
 {
     [Id(0)]
-    public required Guid Id { get; init; }
+    public required Guid PlayerId { get; init; }
 
     [Id(1)]
     public required string Name { get; init; }

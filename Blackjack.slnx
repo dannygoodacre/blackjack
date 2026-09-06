@@ -1,8 +1,8 @@
 <Solution>
   <Project Path="Blackjack.Application/Blackjack.Application.csproj" />
   <Project Path="Blackjack.Domain/Blackjack.Domain.csproj" />
+  <Project Path="Blackjack.Events\Blackjack.Events.csproj" />
   <Project Path="Blackjack.Grains/Blackjack.Grains.csproj" />
-  <Project Path="Blackjack.Marten\Blackjack.Marten.csproj" />
   <Project Path="Blackjack.Requests/Blackjack.Requests.csproj" />
   <Project Path="Blackjack.Web/Blackjack.Web.csproj" />
 </Solution>

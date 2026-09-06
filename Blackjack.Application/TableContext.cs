@@ -2,7 +2,7 @@ using Blackjack.Domain;
 
 namespace Blackjack.Application;
 
-public class TableContext
+public class TableContext : IAggregateContext
 {
-    public TableAggregate Aggregate { get; set; } = null!;
+    public TableAggregate? Aggregate { get; set; }
 }

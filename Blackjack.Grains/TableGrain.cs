@@ -7,26 +7,31 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Blackjack.Grains;
 
-public sealed class TableGrain(IServiceProvider serviceProvider) : Grain, ITableGrain
+public sealed class TableGrain(IServiceProvider serviceProvider, IEventAggregator eventAggregator) : Grain, ITableGrain
 {
-    private TableAggregate _aggregate = null!;
+    private TableAggregate? _aggregate;
 
-    public override Task OnActivateAsync(CancellationToken cancellationToken)
+    public async override Task OnActivateAsync(CancellationToken cancellationToken)
     {
         Guid tableId = this.GetPrimaryKey();
 
-        // TODO: Fetch from Marten, etc.
-        // This only runs once when the grain boots. Afterwards it uses the grain already in memory.
-        _aggregate = new TableAggregate(tableId);
+        _aggregate = await eventAggregator.AggregateStreamAsync<TableAggregate>(tableId, cancellationToken);
+    }
 
-        return Task.CompletedTask;
+    public async Task<IResult> CreateTableAsync(CreateTableRequest request, Guid streamId, CancellationToken cancellationToken = default)
+    {
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var createTable = scope.ServiceProvider.GetRequiredService<ICreateTable>();
+
+        return await createTable.ExecuteAsync(request.ToCommand(streamId), cancellationToken);
     }
 
     public async Task<IResult> AddPlayerAsync(AddPlayerRequest request, CancellationToken cancellationToken = default)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<TableContext>();
+        var context = scope.ServiceProvider.GetRequiredService<IAggregateContext>();
 
         context.Aggregate = _aggregate;
 

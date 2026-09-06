@@ -1,5 +1,4 @@
 using Blackjack.Domain;
-using DannyGoodacre.Cqrs;
 using DannyGoodacre.Primitives;
 using Microsoft.Extensions.Logging;
 
@@ -10,30 +9,28 @@ public interface IAddPlayer
     Task<IResult> ExecuteAsync(AddPlayerCommand command, CancellationToken cancellationToken = default);
 }
 
-public record AddPlayerCommand(Guid PlayerId, string Name) : ICommand;
+public record AddPlayerCommand(Guid StreamId, Guid PlayerId, string Name) : AggregateCommand(StreamId);
 
-internal sealed class AddPlayerCommandHandler(ILogger<AddPlayerCommandHandler> logger, IEventStateUnit eventStateUnit, TableContext context)
-    : StateCommandHandler<AddPlayerCommand>(logger, eventStateUnit), IAddPlayer
+internal sealed class AddPlayerCommandHandler(ILogger<AddPlayerCommandHandler> logger, IEventStateUnit stateUnit, IAggregateContext context)
+    : AggregateCommandHandler<AddPlayerCommand>(logger, stateUnit, context), IAddPlayer
 {
     protected override string CommandName => "Hit";
 
-    private readonly TableAggregate _aggregate = context.Aggregate;
-
     protected override void Validate(ValidationState validationState, AddPlayerCommand command)
     {
-
+        // TODO
     }
 
     protected override Task<IResult> InternalExecuteAsync(AddPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        IResult<List<IDomainEvent>> result = _aggregate.AddPlayer(command.PlayerId, command.Name);
+        IResult<List<IDomainEvent>> result = Aggregate.AddPlayer(command.PlayerId, command.Name);
 
         if (result is not Success<List<IDomainEvent>>(var events))
         {
             return Task.FromResult<IResult>(result);
         }
 
-        eventStateUnit.Append(_aggregate.Id, events);
+        EventStateUnit.Append(Aggregate.Id, events);
 
         return Task.FromResult(Success());
     }
