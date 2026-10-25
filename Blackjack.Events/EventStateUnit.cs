@@ -1,7 +1,8 @@
+using Blackjack.Application;
 using Blackjack.Domain;
 using Marten;
 
-namespace Blackjack.Application;
+namespace Blackjack.Events;
 
 public class EventStateUnit(IDocumentSession session) : IEventStateUnit
 {
@@ -11,6 +12,10 @@ public class EventStateUnit(IDocumentSession session) : IEventStateUnit
 
         return 0;
     }
+
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate>(Guid streamId, CancellationToken cancellationToken = default)
+        where TAggregate : class
+        => session.Events.AggregateStreamAsync<TAggregate>(streamId, token: cancellationToken);
 
     public void Append(Guid streamId, IDomainEvent @event)
         => session.Events.Append(streamId, @event);

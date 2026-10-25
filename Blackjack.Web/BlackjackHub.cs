@@ -1,29 +1,50 @@
 using Blackjack.Grains;
-using Blackjack.Requests;
-using Microsoft.AspNetCore.Mvc;
+using Blackjack.Web.Requests;
+using DannyGoodacre.Primitives;
 using Microsoft.AspNetCore.SignalR;
+using IResult = DannyGoodacre.Primitives.IResult;
 
 namespace Blackjack.Web;
 
-public class BlackjackHub(IGrainFactory factory) : Hub
+public sealed class BlackjackHub(IGrainFactory factory) : Hub
 {
-    public async Task<IActionResult> CreateTableAsync(CreateTableRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> CreateTableAsync(string name, CancellationToken cancellationToken = default)
     {
-        var streamId = Guid.NewGuid();
+        var state = new ValidationState();
 
-        var grain = factory.GetGrain<ITableGrain>(streamId);
+        state.IsNotNullEmptyOrWhitespace(name, nameof(name));
 
-        var result = await grain.CreateTableAsync(request, streamId, cancellationToken);
+        if (state.HasErrors)
+        {
+            return new Invalid(state);
+        }
 
-        return result.ToHttpResponse();
+        var tableId = Guid.NewGuid();
+
+        var grain = factory.GetGrain<ITableGrain>(tableId);
+
+        var result = await grain.CreateTableAsync(name, cancellationToken);
+
+        return result;
     }
 
-    public async Task<IActionResult> AddPlayerAsync(AddPlayerRequest request, CancellationToken cancellationToken = default)
+    public async Task<IResult> AddPlayerAsync(AddPlayerRequest request, CancellationToken cancellationToken = default)
     {
-        var grain = factory.GetGrain<ITableGrain>(request.StreamId);
+        var state = new ValidationState();
 
-        var result = await grain.AddPlayerAsync(request, cancellationToken);
+        state.IsNonEmptyGuid(request.TableId, nameof(request.TableId));
 
-        return result.ToHttpResponse();
+        state.IsNonEmptyGuid(request.PlayerId, nameof(request.PlayerId));
+
+        state.IsNotNullEmptyOrWhitespace(request.Name, nameof(request.Name));
+
+        if (state.HasErrors)
+        {
+            return new Invalid(state);
+        }
+
+        var grain = factory.GetGrain<ITableGrain>(request.TableId);
+
+        return await grain.AddPlayerAsync(request.PlayerId, request.Name, request.TableId, cancellationToken);
     }
 }

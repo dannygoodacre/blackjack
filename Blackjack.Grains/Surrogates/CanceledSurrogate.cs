@@ -4,7 +4,7 @@ using Orleans.Serialization.Cloning;
 namespace Blackjack.Grains.Surrogates;
 
 [GenerateSerializer]
-[Alias("Blackjack.Grains.Surrogates.SuccessSurrogate")]
+[Alias("Blackjack.Grains.Surrogates.CanceledSurrogate")]
 public readonly struct CanceledSurrogate;
 
 [RegisterConverter]
@@ -22,7 +22,7 @@ public sealed class CanceledCopier : IDeepCopier<Canceled>
 }
 
 [GenerateSerializer]
-[Alias("Blackjack.Grains.Surrogates.SuccessSurrogate`1")]
+[Alias("Blackjack.Grains.Surrogates.CanceledSurrogate`1")]
 public readonly struct CanceledSurrogate<T>;
 
 [RegisterConverter]

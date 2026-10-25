@@ -1,7 +1,8 @@
+using Blackjack.Application;
 using Marten;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Blackjack.Application;
+namespace Blackjack.Events;
 
 public static class ServiceCollectionExtensions
 {

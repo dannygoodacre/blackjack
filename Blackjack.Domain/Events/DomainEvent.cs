@@ -1,17 +1,7 @@
 namespace Blackjack.Domain;
 
-public interface IDomainEvent
-{
-    public Guid Id { get; init; }
+public interface IDomainEvent;
 
-    DateTime Timestamp { get; init; }
-}
+public sealed record TableCreatedEvent(string Name) : IDomainEvent;
 
-public abstract record DomainEvent : IDomainEvent
-{
-    public Guid Id { get; init; } = Guid.NewGuid();
-
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-}
-
-public sealed record PlayerAdded(Guid PlayerId, string Name) : DomainEvent;
+public sealed record PlayerAddedEvent(Guid PlayerId, string Name) : IDomainEvent;

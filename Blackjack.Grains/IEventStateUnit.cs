@@ -5,6 +5,9 @@ namespace Blackjack.Application;
 
 public interface IEventStateUnit : IStateUnit
 {
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate>(Guid streamId, CancellationToken cancellationToken = default)
+        where TAggregate : class;
+
     void Append(Guid streamId, IDomainEvent @event);
 
     void Append(Guid streamId, List<IDomainEvent> events);

@@ -7,6 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="DannyGoodacre.Cqrs">
+        <HintPath>..\..\..\.nuget\packages\dannygoodacre.cqrs\0.12.0\lib\net10.0\DannyGoodacre.Cqrs.dll</HintPath>
+      </Reference>
       <Reference Include="DannyGoodacre.Primitives">
         <HintPath>..\..\..\.nuget\packages\dannygoodacre.primitives\0.11.1\lib\net10.0\DannyGoodacre.Primitives.dll</HintPath>
       </Reference>
@@ -19,10 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Blackjack.Application\Blackjack.Application.csproj" />
       <ProjectReference Include="..\Blackjack.Domain\Blackjack.Domain.csproj" />
-      <ProjectReference Include="..\Blackjack.Events\Blackjack.Events.csproj" />
-      <ProjectReference Include="..\Blackjack.Requests\Blackjack.Requests.csproj" />
     </ItemGroup>
 
     <ItemGroup>

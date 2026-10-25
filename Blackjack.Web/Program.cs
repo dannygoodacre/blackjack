@@ -1,6 +1,5 @@
-﻿using Blackjack.Application;
+﻿using Blackjack.Events;
 using Blackjack.Grains;
-using Blackjack.Requests;
 using IResult = DannyGoodacre.Primitives.IResult;
 
 namespace Blackjack.Web;
@@ -13,9 +12,11 @@ class Program
 
         builder.Services.AddLogging();
 
-        builder.Services.AddApplication();
-
         builder.Services.AddEventPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
+
+        builder.Services.AddSignalR();
+
+        builder.Services.AddSingleton<IClientNotifier, ClientNotifier>();
 
         builder.Host.AddGrains();
 
@@ -31,11 +32,8 @@ class Program
 
         var grain = factory.GetGrain<ITableGrain>(Guid.NewGuid());
 
-        IResult result = await grain.AddPlayerAsync(new AddPlayerRequest
-        {
-            StreamId = Guid.NewGuid(),
-            PlayerId = Guid.NewGuid(),
-            Name = "Player Name"
-        }, CancellationToken.None);
+        await grain.CreateTableAsync("Table Name");
+
+        await grain.AddPlayerAsync(Guid.NewGuid(), "Player Name", Guid.NewGuid());
     }
 }

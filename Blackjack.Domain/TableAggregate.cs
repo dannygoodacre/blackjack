@@ -1,60 +1,84 @@
-using System.Runtime.InteropServices;
 using DannyGoodacre.Primitives;
 
 namespace Blackjack.Domain;
 
 public sealed class TableAggregate(Guid id)
 {
-    public Guid Id { get; init; } = id;
+    private const int MaxPlayerCount = 7;
+
+    private Guid Id { get; } = id;
+
+    private string? Name { get; set; }
 
     private readonly List<Card> _shoe = [];
 
-    private readonly Dictionary<Guid, Player> _players = [];
+    private readonly List<Player> _players = [];
 
-    public IResult<List<IDomainEvent>> CreateShoe(int numberOfDecks, int randomSeed)
+    public static (TableAggregate aggregate, TableCreatedEvent @event) Create(Guid id, string name)
     {
-        List<Card> deck = (
-            from rank in Enum.GetValues<Rank>()
-            from suit in Enum.GetValues<Suit>()
-            select new Card
-            {
-                Rank = rank,
-                Suit = suit
-            }).ToList();
+        var @event = new TableCreatedEvent(name);
 
-        for (int i = 0; i < numberOfDecks; i++)
-        {
-            foreach (Card card in deck)
-            {
-                _shoe.Add(card);
-            }
-        }
+        var aggregate = new TableAggregate(id);
 
-        var random = new Random(randomSeed);
+        aggregate.Apply(@event);
 
-        random.Shuffle(CollectionsMarshal.AsSpan(_shoe));
-
-        return Result.Success(new List<IDomainEvent>());
+        return (aggregate, @event);
     }
+
+    // public IResult<List<IDomainEvent>> CreateShoe(int numberOfDecks, int randomSeed)
+    // {
+    //     List<Card> deck = (
+    //         from rank in Enum.GetValues<Rank>()
+    //         from suit in Enum.GetValues<Suit>()
+    //         select new Card
+    //         {
+    //             Rank = rank,
+    //             Suit = suit
+    //         }).ToList();
+    //
+    //     for (int i = 0; i < numberOfDecks; i++)
+    //     {
+    //         foreach (Card card in deck)
+    //         {
+    //             _shoe.Add(card);
+    //         }
+    //     }
+    //
+    //     var random = new Random(randomSeed);
+    //
+    //     random.Shuffle(CollectionsMarshal.AsSpan(_shoe));
+    //
+    //     return Result.Success(new List<IDomainEvent>());
+    // }
 
     public IResult<List<IDomainEvent>> AddPlayer(Guid playerId, string name)
     {
-        if (_players.ContainsKey(playerId))
+        if (_players.Count == MaxPlayerCount)
         {
-            return Result<List<IDomainEvent>>.DomainError("Player already at table");
+            return new DomainError<List<IDomainEvent>>($"Table '{Id}' is full");
         }
 
-        _players.Add(playerId, new Player(playerId, name));
+        if (_players.Any(x => x.Id == playerId))
+        {
+            return Result<List<IDomainEvent>>.DomainError($"Player '{playerId}' is already at table '{Id}'");
+        }
 
-        var @event = new PlayerAdded(playerId, name);
+        var result = PlayerName.Create(name);
 
-        return Result.Success(new List<IDomainEvent> { @event });
+        if (result is not Success<PlayerName>(var playerName))
+        {
+            return result.MapFailure<List<IDomainEvent>>();
+        }
+
+        var @event = new PlayerAddedEvent(playerId, playerName);
+
+        Apply(@event);
+
+        return new Success<List<IDomainEvent>>([@event]);
     }
 
-    public bool ContainsPlayer(Guid playerId) => _players.ContainsKey(playerId);
+    private void Apply(TableCreatedEvent @event) => Name = @event.Name;
 
-    public void Apply(PlayerAdded @event)
-    {
-        _players.Add(@event.PlayerId, new Player(@event.PlayerId, @event.Name));
-    }
+    private void Apply(PlayerAddedEvent @event)
+        => _players.Add(new Player(@event.PlayerId, @event.Name));
 }

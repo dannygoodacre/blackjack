@@ -1,13 +1,10 @@
 using Blackjack.Application;
-using Blackjack.Application.Commands;
 using Blackjack.Domain;
-using Blackjack.Requests;
 using DannyGoodacre.Primitives;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Blackjack.Grains;
 
-public sealed class TableGrain(IServiceProvider serviceProvider, IEventAggregator eventAggregator) : Grain, ITableGrain
+public sealed class TableGrain(IEventStateUnit stateUnit, IClientNotifier notifier) : Grain, ITableGrain
 {
     private TableAggregate? _aggregate;
 
@@ -15,28 +12,51 @@ public sealed class TableGrain(IServiceProvider serviceProvider, IEventAggregato
     {
         Guid tableId = this.GetPrimaryKey();
 
-        _aggregate = await eventAggregator.AggregateStreamAsync<TableAggregate>(tableId, cancellationToken);
+        _aggregate = await stateUnit.AggregateStreamAsync<TableAggregate>(tableId, cancellationToken);
     }
 
-    public async Task<IResult> CreateTableAsync(CreateTableRequest request, Guid streamId, CancellationToken cancellationToken = default)
+    public async Task<IResult> CreateTableAsync(string name, CancellationToken cancellationToken = default)
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
+        Guid tableId = this.GetPrimaryKey();
 
-        var createTable = scope.ServiceProvider.GetRequiredService<ICreateTable>();
+        if (_aggregate is not null)
+        {
+            return new Conflict($"A table with ID '{tableId}' already exists.");
+        }
 
-        return await createTable.ExecuteAsync(request.ToCommand(streamId), cancellationToken);
+        var (aggregate, createdEvent) = TableAggregate.Create(tableId, name);
+
+        stateUnit.Start(tableId, createdEvent);
+
+        await stateUnit.SaveChangesAsync(cancellationToken);
+
+        _aggregate = aggregate;
+
+        return new Success();
     }
 
-    public async Task<IResult> AddPlayerAsync(AddPlayerRequest request, CancellationToken cancellationToken = default)
+    public async Task<IResult> AddPlayerAsync(Guid playerId, string name, Guid streamId, CancellationToken cancellationToken = default)
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
+        Guid tableId = this.GetPrimaryKey();
 
-        var context = scope.ServiceProvider.GetRequiredService<IAggregateContext>();
+        if (_aggregate is null)
+        {
+            return new DomainError($"Table '{tableId} does not exist");
+        }
 
-        context.Aggregate = _aggregate;
+        var result = _aggregate.AddPlayer(playerId, name);
 
-        var hit = scope.ServiceProvider.GetRequiredService<IAddPlayer>();
+        if (result is not Success<List<IDomainEvent>>(var events))
+        {
+            return result;
+        }
 
-        return await hit.ExecuteAsync(request.ToCommand(), cancellationToken);
+        stateUnit.Append(tableId, events);
+
+        await stateUnit.SaveChangesAsync(cancellationToken);
+
+        _ = notifier.NotifyPlayerJoinedAsync(tableId, playerId, name);
+
+        return new Success();
     }
 }

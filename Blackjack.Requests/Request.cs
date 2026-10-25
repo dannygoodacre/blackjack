@@ -1,9 +1,0 @@
-﻿namespace Blackjack.Requests;
-
-[GenerateSerializer]
-[Alias("Blackjack.Requests.Request")]
-public abstract record Request
-{
-    [Id(0)]
-    public Guid StreamId { get; init; }
-}

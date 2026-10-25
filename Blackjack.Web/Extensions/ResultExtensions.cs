@@ -35,7 +35,7 @@ internal static class ResultExtensions
 
             DomainError domainError => new UnprocessableEntityObjectResult(domainError.Message),
 
-            Invalid invalid => new BadRequestObjectResult(invalid.ValidationState!.ToValidationProblemDetails()),
+            Invalid invalid => new BadRequestObjectResult(invalid.ValidationState.ToValidationProblemDetails()),
 
             NotFound => new NotFoundResult(),
 
